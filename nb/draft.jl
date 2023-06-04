@@ -60,81 +60,14 @@ PlutoUI.TableOfContents(title="JRT draft", indent=true)
 # ╔═╡ fc869138-1cf7-463b-aca5-729741f8b1ff
 GLMakie.activate!()
 
-# ╔═╡ f230deec-f4c9-429a-89f5-92d8c08e8472
-md"""
-### Defining a cylinder using GeometryBasics
-"""
-
-# ╔═╡ 7371f833-a7a8-482c-925b-730d8378c22e
-gcyl = GeometryBasics.Cylinder(GeometryBasics.Point{3, Float64}(1,2,3), GeometryBasics.Point{3, Float64}(2,3,4), 1.0)
-
-# ╔═╡ 2c803aef-9a52-4108-a252-e63a95929c67
-cyL =GeometryBasics.mesh(GeometryBasics.Tesselation(gcyl, 100))
-
 # ╔═╡ c7583c88-4cfc-49e1-b61e-c299801be450
 md"""
 ## Drawing a cylinder
-- A cylinder of radius r, and height h, having z-axis as symmetry axis, is a stack of circles of radius r:
-
-$\begin{align}
-x= r \times \cos(u) \\
-y=r \times sin(u) \\
-z=v 
-\end{align}$
-
-where:
-$u \in [0,2\pi]$
-$v \in [0,h]$
-
-- This allows to plot the cylinder as any parameterized surface.
-- For example:
-	- Define u as a range beteen 0 and 2π
-	- Define v as a range between 0 and 10.0 (the length of the cylinder)
 """
 
 # ╔═╡ c48c5f53-2632-4cfc-b07b-7fde9f1d8eb6
 md"""
 ## Testing functions
-"""
-
-# ╔═╡ de0fb8fd-c757-4769-a2da-d874add0a553
-md"""
-### Check function **in_endcaps**
-"""
-
-# ╔═╡ c95dcf93-40ff-4db0-a323-29991f5135dd
-md"""
-### Demonstrate propagation functions
-"""
-
-# ╔═╡ c7200fa5-31eb-458c-80ca-70f968edd9b0
-md"""
-#### Ray moving along z axis, with no x,y components. It must intersect endcups (either zmax or zmin)
-"""
-
-# ╔═╡ a89c0c98-ee2c-4103-8cd3-9be03a2b75ae
-md"""
-- Function **cylinder\_intersection\_roots** returns the smaller positive root corresponding to the intersection between the ray and the cylinder. Since in this case the ray does not intersect the cylinder (the endcups are not the cylinder surface) the root must be zero 
-"""
-
-# ╔═╡ aa445ed2-dc2d-4802-ab12-18505487ceef
-md"""
-- Function **ray\_intersection\_with_cylinder** will return the recomputed ray
-"""
-
-# ╔═╡ 6c2b1465-02ae-4768-a4f6-e8f461339b97
-md"""
-- Since this is a ray going in the zp direction, t=0, and the recomputed e point in the ray is in zmax and belongs to the upper end-cap. 
-"""
-
-# ╔═╡ 26d72ea7-31e5-4c55-af55-7666f7c47f1c
-md"""
-- We can now check that the point **inendcaps** is indeed in the end-caps
-"""
-
-# ╔═╡ b9c450a6-446e-4a5c-93ee-28a45cf96356
-md"""
-- A ray pointing into negative z should end up in the bottom end-cap
 """
 
 # ╔═╡ 59138131-46c1-4ac8-be0b-42f5ca2e30b8
@@ -252,6 +185,14 @@ md"""
 ## Activity of reinforcement plate
 """
 
+# ╔═╡ fb431946-28d1-4042-9b18-aa4439e48d84
+md"""
+## Making holes in plates
+"""
+
+# ╔═╡ 9148483a-c144-4a10-8606-d73ab695abaa
+1200/76
+
 # ╔═╡ ce9da661-5f2f-4e5d-825e-5d029c274066
 md"""
 # Types
@@ -352,9 +293,6 @@ end
 # ╔═╡ 3c398d08-ef94-4202-9b87-62aa4fba07ed
 cyl =Cylinder(5.0, 0., 10.0) # draws only the barrel 
 
-# ╔═╡ 50f7c64a-4fa6-4705-b2e9-896ef545029f
-cyl
-
 # ╔═╡ c7d4775a-f585-4852-a172-337655cb21ed
 stdsk = Cylinder(100.0, 0., 20.0)
 
@@ -388,19 +326,13 @@ where e in the initial point and d is the direction vector
 struct Ray
     e::Vector{Float64}
     d::Vector{Float64}
-	u::Vector{Float64}
-	function Ray(e::Vector{Float64}, d::Vector{Float64})
-		u = d .- e
-		new(e,d,u)
-	end
+	#u::Vector{Float64}
+	#function Ray(e::Vector{Float64}, d::Vector{Float64})
+	#	u = d .- e
+	#	new(e,d,u)
+	#end
 end
 
-
-# ╔═╡ 9e193e81-0147-46d2-943f-1526dfb26e50
-rzp = Ray([1.0, 0.0, 0.0], [0.0, 0.0, 1.0]) # starts in (1,0,0), moves towards z+
-
-# ╔═╡ 5de835fa-284f-4dd0-ba1d-033d4c50da5a
-rzn = Ray([1.0, 0.0, 0.0], [0.0, 0.0, -1.0]) # starts in (1,0,0), moves towards z+
 
 # ╔═╡ 40cff386-97de-4e6c-8d22-216302831893
 ry = Ray([1.0, 0.0, 0.0], [0.5, 0.5, 1.0])
@@ -432,9 +364,6 @@ function get_cylinder(cl::Cylinder, np=100)
 	gcyl, cyL
 end
 
-# ╔═╡ ef077643-f5b1-4244-af7e-8111ede962a0
-gcyl2, cylm = get_cylinder(cyl) # from cyl get GeometryBasics objects
-
 # ╔═╡ 269e4b09-3505-40fe-8815-2bc847d02a99
 """
 Takes a cylinder and returns a Makie drawing, either frame or wireframe
@@ -455,12 +384,6 @@ function draw_cylinder(cl::Cylinder, np=100;  resolution = (1000,1000),
 		fig
 	end
 end
-
-# ╔═╡ 81d62300-1a88-4c9c-b050-8acd20857867
-fig = draw_cylinder(cyl, wf=true) # draw cylinder as wireframe
-
-# ╔═╡ 5e1c520f-fb11-4698-a981-5f3863c4788c
-draw_cylinder(cyl, wf=false) # draw cylinder as volume 
 
 # ╔═╡ c26c8511-afae-4447-9458-d1d21f565911
 """
@@ -594,15 +517,6 @@ atl208ti316Bq = a_tl208(dskti316, mti316)
  """
 in_endcaps(c::Cylinder, p::Vector{Float64}) = isapprox(p[3], c.zmin, atol=1e-7) || isapprox(p[3], c.zmax, atol=1e-7) 
 
-# ╔═╡ d06eaf38-f8bb-4732-9b8f-92f2a1053176
-in_endcaps(cyl, [0.0, 0.0, 5.0]) # not in endcup
-
-# ╔═╡ 2940f9d9-f2c3-4772-8208-2375370b7e61
-in_endcaps(cyl, [0.0, 0.0, 0.0] )  # in bottom endcup
-
-# ╔═╡ a7378f23-9b56-4a5f-8c4b-b51545e69633
-in_endcaps(cyl, [0.0, 0.0, 10.0] )  # in top endcup
-
 # ╔═╡ 464a3cf9-c030-4270-bae7-bf4339ed3fc8
  """Returns True if point is in barrel of cyinder
  This means that the point verifies the equation of cylinder
@@ -718,12 +632,6 @@ function cylinder_intersection_roots(r::Ray, cl::Cylinder, eps::Float64=1e-9)
 	end
 end
 
-# ╔═╡ da50ac8a-8381-490b-a000-b6ba8b392888
-cylinder_intersection_roots(rzp, cyl)
-
-# ╔═╡ 71203991-d5c4-439f-8dd1-fe1b4cf3b875
-cylinder_intersection_roots(rzn, cyl)
-
 # ╔═╡ 96af216d-c0e3-4825-a11f-3aaa04c42d0b
 cylinder_intersection_roots(ry, cyl) # we keep only the positive root
 
@@ -769,18 +677,6 @@ function ray_intersection_with_cylinder(r::Ray, cl::Cylinder)
 		return Ray(P, r.d)
 	end
 end
-
-# ╔═╡ 24cd55d7-6752-4e48-a3fa-7951cbff1b36
- rxp = ray_intersection_with_cylinder(rzp, cyl)
-
-# ╔═╡ c3abda05-42ec-4759-bea4-cdf7ee92ed70
-in_endcaps(cyl, rxp.e)
-
-# ╔═╡ 366cf831-3558-44f2-bf09-6d9de74bf04d
- rxn = ray_intersection_with_cylinder(rzn, cyl)
-
-# ╔═╡ 95a82d89-7b7f-4ce9-8f21-b527543c57f7
-in_endcaps(cyl, rxn.e)
 
 # ╔═╡ 21aeb736-8655-4747-bfa7-1ad9b5395fc3
  rxy = ray_intersection_with_cylinder(ry, cyl)
@@ -1204,9 +1100,6 @@ function draw_cylinder_barrel(c::Cylinder, ptheta=100, pz=100)
 	GLMakie.surface(X, Y, Z)
 end
 
-# ╔═╡ 53a6f956-1957-4915-9900-3af1f44ed2fa
-draw_cylinder_barrel(cyl, 2, 100)
-
 # ╔═╡ 252b84b2-aa7c-4d17-887b-241d0302e446
 """
 Draw the three surfaces of a cylinder (barrel, bottom, top) using GLMakie
@@ -1240,10 +1133,10 @@ end
 draw_cylinderx(cyl, 200) #draws the three surfaces (cylinder is transparent)
 
 # ╔═╡ 646c967d-145a-4f2a-9330-c4dbca8d78fc
-draw_cylinderx(cyl, 200, showbarrel=true, showendcups=false,viewa=[1,0,0], viewr=2π)
+draw_cylinderx(cyl, 200, showbarrel=true, showendcups=false,viewa=[1,0,0], viewr=π)
 
 # ╔═╡ 4a047576-ab00-4821-9383-1ba945f39285
-draw_cylinderx(cyl, 200, showbarrel=false, showendcups=true)
+draw_cylinderx(cyl, 200, showbarrel=false, showendcups=true, viewa=[1,0,0], viewr=π)
 
 # ╔═╡ 476bc4d8-7e22-4342-92ad-4896e47d437f
 draw_cylinderx(stdsk, 200)
@@ -1370,39 +1263,12 @@ lines_in_3D()
 # ╠═e36751ff-a521-4529-95c8-6bbfc3314e66
 # ╠═df3dde7a-9437-409f-bd51-db975f74b78c
 # ╠═fc869138-1cf7-463b-aca5-729741f8b1ff
-# ╠═f230deec-f4c9-429a-89f5-92d8c08e8472
-# ╠═7371f833-a7a8-482c-925b-730d8378c22e
-# ╠═2c803aef-9a52-4108-a252-e63a95929c67
 # ╠═c7583c88-4cfc-49e1-b61e-c299801be450
 # ╠═3c398d08-ef94-4202-9b87-62aa4fba07ed
-# ╠═53a6f956-1957-4915-9900-3af1f44ed2fa
-# ╠═ef077643-f5b1-4244-af7e-8111ede962a0
-# ╠═81d62300-1a88-4c9c-b050-8acd20857867
-# ╠═5e1c520f-fb11-4698-a981-5f3863c4788c
 # ╠═911d4179-909c-48f5-9a40-f23efe044498
 # ╠═646c967d-145a-4f2a-9330-c4dbca8d78fc
 # ╠═4a047576-ab00-4821-9383-1ba945f39285
 # ╠═c48c5f53-2632-4cfc-b07b-7fde9f1d8eb6
-# ╠═de0fb8fd-c757-4769-a2da-d874add0a553
-# ╠═50f7c64a-4fa6-4705-b2e9-896ef545029f
-# ╠═d06eaf38-f8bb-4732-9b8f-92f2a1053176
-# ╠═2940f9d9-f2c3-4772-8208-2375370b7e61
-# ╠═a7378f23-9b56-4a5f-8c4b-b51545e69633
-# ╠═c95dcf93-40ff-4db0-a323-29991f5135dd
-# ╠═c7200fa5-31eb-458c-80ca-70f968edd9b0
-# ╠═9e193e81-0147-46d2-943f-1526dfb26e50
-# ╠═a89c0c98-ee2c-4103-8cd3-9be03a2b75ae
-# ╠═da50ac8a-8381-490b-a000-b6ba8b392888
-# ╠═aa445ed2-dc2d-4802-ab12-18505487ceef
-# ╠═24cd55d7-6752-4e48-a3fa-7951cbff1b36
-# ╠═6c2b1465-02ae-4768-a4f6-e8f461339b97
-# ╠═c3abda05-42ec-4759-bea4-cdf7ee92ed70
-# ╠═26d72ea7-31e5-4c55-af55-7666f7c47f1c
-# ╠═b9c450a6-446e-4a5c-93ee-28a45cf96356
-# ╠═5de835fa-284f-4dd0-ba1d-033d4c50da5a
-# ╠═71203991-d5c4-439f-8dd1-fe1b4cf3b875
-# ╠═366cf831-3558-44f2-bf09-6d9de74bf04d
-# ╠═95a82d89-7b7f-4ce9-8f21-b527543c57f7
 # ╠═59138131-46c1-4ac8-be0b-42f5ca2e30b8
 # ╠═02a7fd08-440c-4e0c-93c8-d42792642d11
 # ╠═40cff386-97de-4e6c-8d22-216302831893
@@ -1488,6 +1354,8 @@ lines_in_3D()
 # ╠═7ec540e6-35d1-44b8-a904-2aa049914d54
 # ╠═f2149fdb-4abd-475a-b351-5cbcf9318c11
 # ╠═9feb2372-b1de-4894-9997-b95a5f8a8b42
+# ╠═fb431946-28d1-4042-9b18-aa4439e48d84
+# ╠═9148483a-c144-4a10-8606-d73ab695abaa
 # ╠═ce9da661-5f2f-4e5d-825e-5d029c274066
 # ╠═24b1b8ef-10ee-4d96-8121-827234233873
 # ╠═6458b9a6-e0b1-40cf-87bd-3e3f01990525
